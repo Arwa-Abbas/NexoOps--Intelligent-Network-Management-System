@@ -9,7 +9,7 @@ import re
 nltk.download('punkt', quiet=True)
 
 # -----------------------------
-# Step 1: Preprocess and tokenize logs
+# Preprocess and tokenize logs
 # -----------------------------
 def preprocess_logs(log_text):
     """
@@ -20,7 +20,7 @@ def preprocess_logs(log_text):
     return sentences
 
 # -----------------------------
-# Step 2: Detect repeated/critical patterns
+# Detect repeated/critical patterns
 # -----------------------------
 def detect_patterns(sentences, error_keywords=None):
     """
@@ -36,7 +36,7 @@ def detect_patterns(sentences, error_keywords=None):
     return line_counts
 
 # -----------------------------
-# Step 3: Compute TF-IDF sentence scores
+# Compute TF-IDF sentence scores
 # -----------------------------
 def compute_tfidf_scores(sentences):
     """
@@ -48,7 +48,7 @@ def compute_tfidf_scores(sentences):
     return sentence_scores, tfidf_matrix
 
 # -----------------------------
-# Step 4: Cluster similar sentences
+# Cluster similar sentences
 # -----------------------------
 def cluster_sentences(tfidf_matrix, sentences, num_clusters=10):
     """
@@ -65,7 +65,7 @@ def cluster_sentences(tfidf_matrix, sentences, num_clusters=10):
     return clusters
 
 # -----------------------------
-# Step 5: Select representative sentence from each cluster
+# Select representative sentence from each cluster
 # -----------------------------
 def select_representatives(sentences, sentence_scores, clusters, line_counts):
     """
@@ -87,7 +87,7 @@ def select_representatives(sentences, sentence_scores, clusters, line_counts):
     return rep_indices
 
 # -----------------------------
-# Step 6: Rank top representatives for summary
+# Rank top representatives for summary
 # -----------------------------
 def rank_top_sentences(sentences, sentence_scores, line_counts, rep_indices, n_sentences=5):
     """
@@ -109,7 +109,7 @@ def rank_top_sentences(sentences, sentence_scores, line_counts, rep_indices, n_s
     return top_indices
 
 # -----------------------------
-# Step 7: Full summarization pipeline
+# Full summarization pipeline
 # -----------------------------
 def summarize_log(log_text, n_sentences=5, num_clusters=10):
     """
@@ -122,33 +122,25 @@ def summarize_log(log_text, n_sentences=5, num_clusters=10):
     6. Rank top representatives
     7. Build final summary
     """
-    # Step 1
+
     sentences = preprocess_logs(log_text)
     if len(sentences) <= n_sentences:
-        return log_text  # short logs returned as-is
-    
-    # Step 2
+        return log_text  
+
     line_counts = detect_patterns(sentences)
-    
-    # Step 3
+
     sentence_scores, tfidf_matrix = compute_tfidf_scores(sentences)
     
-    # Step 4
     clusters = cluster_sentences(tfidf_matrix, sentences, num_clusters=num_clusters)
-    
-    # Step 5
+
     rep_indices = select_representatives(sentences, sentence_scores, clusters, line_counts)
-    
-    # Step 6
+
     top_indices = rank_top_sentences(sentences, sentence_scores, line_counts, rep_indices, n_sentences=n_sentences)
     
-    # Step 7: Build summary
     summary = ' '.join([sentences[i] for i in top_indices])
     return summary
 
-# -----------------------------
-# Example usage
-# -----------------------------
+
 if __name__ == "__main__":
     with open("log2_50K.txt", "r") as file:
         log_text = file.read()

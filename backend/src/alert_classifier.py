@@ -1,6 +1,3 @@
-# ================================================
-# ENHANCED ALERT CLASSIFICATION SYSTEM FOR PLAIN LOGS
-# ================================================
 from summarizer import summarize_log
 import re
 import joblib
@@ -20,7 +17,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # -----------------------------
-# STEP 1: CLEAN LOG TEXT
+# CLEAN LOG TEXT
 # -----------------------------
 def clean_text(text):
     if not isinstance(text, str):
@@ -37,7 +34,7 @@ def clean_text(text):
     return text
 
 # -----------------------------
-# STEP 2: FEATURE EXTRACTION
+# FEATURE EXTRACTION
 # -----------------------------
 def extract_features(text):
     features = {}
@@ -52,7 +49,7 @@ def extract_features(text):
     return features
 
 # -----------------------------
-# STEP 3: GENERATE SYNTHETIC LOG DATA FOR TRAINING
+# GENERATE SYNTHETIC LOG DATA FOR TRAINING
 # -----------------------------
 def generate_enterprise_logs(n_samples=5000):
     np.random.seed(42)
@@ -85,7 +82,7 @@ def load_training_data():
     return df
 
 # -----------------------------
-# STEP 4: TRAIN MODEL
+# TRAIN MODEL
 # -----------------------------
 def train_alert_model():
     df = load_training_data()
@@ -129,17 +126,17 @@ def train_alert_model():
             best_pipeline = pipe
 
     joblib.dump(best_pipeline, "alert_model.joblib")
-    print(f"🏆 Best model: {best_model} with accuracy {best_score:.4f}")
+    print(f"Best model: {best_model} with accuracy {best_score:.4f}")
     return best_pipeline
 
 # -----------------------------
-# STEP 5: PREDICT SEVERITY FOR SINGLE LOG
+# PREDICT SEVERITY FOR SINGLE LOG
 # -----------------------------
 def predict_severity_from_log(log_text):
     try:
         model = joblib.load("alert_model.joblib")
     except FileNotFoundError:
-        print("❌ Model not found. Train the model first.")
+        print("Model not found. Train the model first.")
         return None, None
 
     summary = summarize_log(log_text, n_sentences=2, num_clusters=2)
@@ -167,7 +164,7 @@ def predict_severity_from_log(log_text):
     return prediction, prob_dict
 
 # -----------------------------
-# STEP 6: PREDICT BATCH LOGS
+# PREDICT BATCH LOGS
 # -----------------------------
 def predict_batch_logs_plain_txt(log_files):
     results = []
@@ -188,7 +185,7 @@ def predict_batch_logs_plain_txt(log_files):
                     'probabilities': probabilities
                 })
         except Exception as e:
-            print(f"❌ Error reading {log_file}: {str(e)}")
+            print(f"Error reading {log_file}: {str(e)}")
             results.append({'file': log_file,'line':None,'severity':'Error','probabilities':None})
     return results
 
@@ -204,18 +201,18 @@ def classify_log(text):
 # MAIN EXECUTION
 # -----------------------------
 if __name__ == "__main__":
-    print("🚀 ALERT CLASSIFICATION SYSTEM FOR PLAIN LOGS")
+    print("ALERT CLASSIFICATION SYSTEM FOR PLAIN LOGS")
     print("="*50)
     
-    # Train model (only first time)
+    # Train model 
     print("1. Training model...")
     train_alert_model()
     
-    # Example: predict your log file
+    # predict your log file
     log_files = ["log1.txt"]
     results = predict_batch_logs_plain_txt(log_files)
 
-    print("\n📋 BATCH PREDICTION SUMMARY:")
+    print("\nBATCH PREDICTION SUMMARY:")
     print("="*50)
     for result in results:
         print(f"File: {result['file']}, Line: {result['line']}")
