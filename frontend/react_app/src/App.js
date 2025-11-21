@@ -3,6 +3,135 @@ import { motion, AnimatePresence } from "framer-motion";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { MessageSquare, Upload, Activity, AlertTriangle, TrendingUp, Server, Zap, Send, FileText, BarChart3, Brain, Shield, Lock, Wifi, Database } from "lucide-react";
 
+// Animated Robot Mascot Component - Added to your original code
+const RobotMascot = () => {
+  const [isWaving, setIsWaving] = useState(true);
+  const [showBubble, setShowBubble] = useState(false);
+  const [bubbleText, setBubbleText] = useState("Hi there!");
+  const messages = ["Hi there!", "Need help?", "I'm NexoBot!", "Click me!", "System OK ✓"];
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowBubble(true);
+      setBubbleText(messages[Math.floor(Math.random() * messages.length)]);
+      setTimeout(() => setShowBubble(false), 3000);
+    }, 8000);
+    setTimeout(() => { setShowBubble(true); setTimeout(() => setShowBubble(false), 3000); }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleClick = () => {
+    setShowBubble(true);
+    setBubbleText(messages[Math.floor(Math.random() * messages.length)]);
+    setTimeout(() => setShowBubble(false), 2500);
+  };
+
+  return (
+    <div className="fixed bottom-6 right-6 z-50 cursor-pointer" onClick={handleClick}>
+      {/* Speech Bubble */}
+      <div className={`absolute -top-12 right-0 bg-cyan-500 text-white px-3 py-1.5 rounded-lg text-sm font-bold whitespace-nowrap transition-all duration-300 ${showBubble ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
+        {bubbleText}
+        <div className="absolute -bottom-1.5 right-6 w-3 h-3 bg-cyan-500 rotate-45"></div>
+      </div>
+      
+      {/* Robot Container */}
+      <div className="relative" style={{ animation: 'robotFloat 3s ease-in-out infinite' }}>
+        {/* Glow Effect */}
+        <div className="absolute inset-0 bg-cyan-500 rounded-full blur-xl opacity-30" style={{ animation: 'pulse 2s ease-in-out infinite' }}></div>
+        
+        {/* Robot Body */}
+        <div className="relative w-20 h-24">
+          {/* Antenna */}
+          <div className="absolute left-1/2 -translate-x-1/2 -top-4 w-1 h-4 bg-gradient-to-t from-cyan-500 to-cyan-300">
+            <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-3 h-3 bg-cyan-400 rounded-full" style={{ animation: 'antennaBlink 1.5s ease-in-out infinite' }}>
+              <div className="absolute inset-0 bg-cyan-400 rounded-full" style={{ animation: 'ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite' }}></div>
+            </div>
+          </div>
+          
+          {/* Head */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-14 bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900 rounded-xl border-2 border-cyan-500/50 overflow-hidden">
+            {/* Screen Face */}
+            <div className="absolute inset-1 bg-gray-900 rounded-lg flex items-center justify-center">
+              {/* Eyes */}
+              <div className="flex gap-3">
+                <div className="w-3 h-3 bg-cyan-400 rounded-full" style={{ animation: 'eyeBlink 4s ease-in-out infinite' }}></div>
+                <div className="w-3 h-3 bg-cyan-400 rounded-full" style={{ animation: 'eyeBlink 4s ease-in-out infinite 0.1s' }}></div>
+              </div>
+            </div>
+            {/* Scan Line */}
+            <div className="absolute inset-0 overflow-hidden rounded-lg">
+              <div className="absolute w-full h-1 bg-cyan-500/20" style={{ animation: 'scanLine 2s linear infinite' }}></div>
+            </div>
+          </div>
+          
+          {/* Body */}
+          <div className="absolute top-12 left-1/2 -translate-x-1/2 w-14 h-12 bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900 rounded-lg border-2 border-cyan-500/50">
+            {/* Chest Light */}
+            <div className="absolute top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-cyan-500 rounded-full" style={{ animation: 'chestGlow 2s ease-in-out infinite' }}>
+              <div className="absolute inset-0.5 bg-cyan-300 rounded-full"></div>
+            </div>
+            {/* Body Details */}
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+              <div className="w-1.5 h-1.5 bg-orange-400 rounded-full"></div>
+              <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
+              <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></div>
+            </div>
+          </div>
+          
+          {/* Left Arm - Waving */}
+          <div className="absolute top-14 -left-1 w-3 h-8 bg-gradient-to-b from-gray-700 to-gray-800 rounded-full border border-cyan-500/30 origin-top" style={{ animation: isWaving ? 'waveArm 0.6s ease-in-out infinite' : 'none' }}>
+            <div className="absolute -bottom-1 left-0 w-3 h-3 bg-cyan-500 rounded-full"></div>
+          </div>
+          
+          {/* Right Arm */}
+          <div className="absolute top-14 -right-1 w-3 h-8 bg-gradient-to-b from-gray-700 to-gray-800 rounded-full border border-cyan-500/30" style={{ animation: 'armSwing 2s ease-in-out infinite' }}>
+            <div className="absolute -bottom-1 left-0 w-3 h-3 bg-cyan-500 rounded-full"></div>
+          </div>
+        </div>
+      </div>
+      
+      {/* CSS Animations */}
+      <style>{`
+        @keyframes robotFloat {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
+        @keyframes waveArm {
+          0%, 100% { transform: rotate(-20deg); }
+          50% { transform: rotate(30deg); }
+        }
+        @keyframes armSwing {
+          0%, 100% { transform: rotate(5deg); }
+          50% { transform: rotate(-5deg); }
+        }
+        @keyframes eyeBlink {
+          0%, 45%, 55%, 100% { transform: scaleY(1); }
+          50% { transform: scaleY(0.1); }
+        }
+        @keyframes antennaBlink {
+          0%, 100% { opacity: 1; box-shadow: 0 0 10px #06b6d4; }
+          50% { opacity: 0.5; box-shadow: 0 0 20px #06b6d4; }
+        }
+        @keyframes chestGlow {
+          0%, 100% { box-shadow: 0 0 10px #06b6d4; }
+          50% { box-shadow: 0 0 20px #06b6d4, 0 0 30px #06b6d4; }
+        }
+        @keyframes scanLine {
+          0% { top: 0; }
+          100% { top: 100%; }
+        }
+        @keyframes ping {
+          75%, 100% { transform: scale(2); opacity: 0; }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 0.5; }
+        }
+      `}</style>
+    </div>
+  );
+};
+
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [logText, setLogText] = useState("");
@@ -297,6 +426,9 @@ function App() {
       transition={{ duration: 0.5 }}
       className="min-h-screen bg-black text-white font-mono"
     >
+      {/* Robot Mascot - Added here */}
+      <RobotMascot />
+
       <motion.header
         initial={{ y: -100 }}
         animate={{ y: 0 }}
@@ -428,6 +560,7 @@ function App() {
                   exit={{ opacity: 0, y: -20 }}
                   className="space-y-6"
                 >
+                  {/* Your existing logs tab content remains exactly the same */}
                   <div className="bg-gradient-to-br from-gray-900 to-black border border-cyan-900/50 rounded-xl p-6 shadow-2xl">
                     <h2 className="text-lg text-cyan-400 mb-4 flex items-center gap-2">
                       <Upload className="w-5 h-5" />
@@ -535,6 +668,7 @@ function App() {
                     chatExpanded ? 'fixed inset-4 z-50' : 'h-[calc(100vh-220px)]'
                   }`}
                 >
+                  {/* Your existing chat tab content remains exactly the same */}
                   <div className="p-4 border-b border-cyan-900/50">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -732,6 +866,7 @@ function App() {
                   exit={{ opacity: 0, y: -20 }}
                   className="space-y-6"
                 >
+                  {/* Your existing analytics tab content remains exactly the same */}
                   <div className="bg-gradient-to-br from-gray-900 to-black border border-cyan-900/50 rounded-xl p-6 shadow-2xl">
                     <h2 className="text-lg text-cyan-400 mb-4 flex items-center gap-2">
                       <Activity className="w-5 h-5" />
