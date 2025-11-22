@@ -19,7 +19,7 @@ This system reduces manual effort, improves response time, and enhances network 
 - Generates short, readable summaries  
 
 ### 🔹 **2. Automated Alert Classification**
-- ML-based classification of alerts: **Critical, Major, Minor, Informational**  
+- ML-based classification of alerts: **Critical, High, Medium, Low**   
 - Trained using features like:
   - Error code  
   - Frequency  
@@ -30,8 +30,8 @@ This system reduces manual effort, improves response time, and enhances network 
 - Ask natural language questions such as:
   - “Show me today’s critical alerts”
   - “Summarize last hour logs”
-  - “Diagnose high latency on subnet”
-- Returns instant insights using backend APIs  
+  - “Show network status”
+- All commands of chatOps can be found through chatbot_commands.txt file!
 
 ---
 
