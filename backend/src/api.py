@@ -32,6 +32,7 @@ def home():
         }
     })
 
+
 # ==================== LOG ANALYSIS ENDPOINTS ====================
 
 @app.route('/summarize', methods=['POST'])
@@ -55,6 +56,7 @@ def summarize():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 @app.route('/classify', methods=['POST'])
 def classify():
     """Classify log severity"""
@@ -73,6 +75,7 @@ def classify():
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
@@ -94,6 +97,7 @@ def analyze():
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 # ==================== CHATBOT ENDPOINTS ====================
 
@@ -117,6 +121,7 @@ def chat():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 # ==================== NETWORK MONITORING ENDPOINTS ====================
 
 @app.route('/network/status', methods=['GET'])
@@ -124,8 +129,9 @@ def network_status():
     """Get current network status"""
     try:
         bot = get_chatbot()
-        stats = bot.monitor.get_system_network_stats()
-        bandwidth = bot.monitor.get_bandwidth_usage()
+        
+        stats = bot.ops.get_network_stats()  
+        bandwidth = bot.ops.get_bandwidth()  
         
         return jsonify({
             "stats": stats,
@@ -135,31 +141,32 @@ def network_status():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 @app.route('/network/alerts', methods=['GET'])
 def network_alerts():
     """Get network alerts"""
     try:
         bot = get_chatbot()
-        severity = request.args.get('severity', None)
         hours = int(request.args.get('hours', 24))
         
-        alerts = bot.monitor.get_recent_alerts(severity=severity, hours=hours)
+        current_alerts = bot.ops.check_alerts()
+        recent_alerts = bot.ops.get_recent_alerts(hours=hours)
         
         return jsonify({
-            "alerts": alerts,
-            "count": len(alerts),
-            "severity_filter": severity,
+            "alerts": current_alerts + recent_alerts,
+            "count": len(current_alerts + recent_alerts),
             "time_window_hours": hours
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 @app.route('/network/speed-test', methods=['POST'])
 def speed_test():
     """Run internet speed test"""
     try:
         bot = get_chatbot()
-        result = bot.monitor.run_speed_test()
+        result = bot.ops.speed_test() 
         
         return jsonify({
             "speed_test": result,
@@ -168,12 +175,13 @@ def speed_test():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 @app.route('/network/interfaces', methods=['GET'])
 def network_interfaces():
     """Get network interfaces"""
     try:
         bot = get_chatbot()
-        interfaces = bot.monitor.get_network_interfaces()
+        interfaces = bot.ops.get_interfaces() 
         
         return jsonify({
             "interfaces": interfaces,
@@ -182,13 +190,14 @@ def network_interfaces():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 @app.route('/network/connections', methods=['GET'])
 def network_connections():
     """Get active network connections"""
     try:
         bot = get_chatbot()
         limit = int(request.args.get('limit', 20))
-        connections = bot.monitor.get_active_connections(limit=limit)
+        connections = bot.ops.get_connections(limit=limit)  
         
         return jsonify({
             "connections": connections,
@@ -197,12 +206,13 @@ def network_connections():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 @app.route('/network/bandwidth', methods=['GET'])
 def network_bandwidth():
     """Get current bandwidth usage"""
     try:
         bot = get_chatbot()
-        bandwidth = bot.monitor.get_bandwidth_usage()
+        bandwidth = bot.ops.get_bandwidth()  
         
         return jsonify({
             "bandwidth": bandwidth,
@@ -210,6 +220,7 @@ def network_bandwidth():
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 @app.route('/network/ping', methods=['POST'])
 def network_ping():
@@ -222,7 +233,7 @@ def network_ping():
             return jsonify({"error": "No host provided"}), 400
         
         bot = get_chatbot()
-        result = bot.monitor.ping_host(host)
+        result = bot.ops.ping(host)  
         
         return jsonify({
             "ping_result": result,
@@ -230,6 +241,7 @@ def network_ping():
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 @app.route('/network/port-check', methods=['POST'])
 def port_check():
@@ -243,7 +255,7 @@ def port_check():
             return jsonify({"error": "Host and port required"}), 400
         
         bot = get_chatbot()
-        result = bot.monitor.check_port(host, int(port))
+        result = bot.ops.check_port(host, int(port))  
         
         return jsonify({
             "port_check": result,
@@ -253,47 +265,36 @@ def port_check():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 @app.route('/network/health', methods=['GET'])
 def system_health():
     """Get system health metrics"""
     try:
         bot = get_chatbot()
-        alerts = bot.monitor.check_system_health()
-        
-        import psutil
-        cpu = psutil.cpu_percent(interval=1)
-        memory = psutil.virtual_memory()
-        disk = psutil.disk_usage('/')
+        health = bot.ops.system_health()  
         
         return jsonify({
-            "health": {
-                "cpu_percent": cpu,
-                "memory_percent": memory.percent,
-                "disk_percent": disk.percent,
-                "status": "healthy" if cpu < 80 and memory.percent < 80 else "warning"
-            },
-            "alerts": alerts,
-            "alert_count": len(alerts)
+            "health": health,
+            "status": health.get('overall', 'unknown')
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 @app.route('/network/history', methods=['GET'])
 def network_history():
     """Get network statistics history"""
     try:
         bot = get_chatbot()
-        limit = int(request.args.get('limit', 50))
-        
-        history = list(bot.monitor.network_stats_history)[-limit:]
+        stats = bot.ops.get_network_stats()
         
         return jsonify({
-            "history": history,
-            "count": len(history),
-            "monitoring_active": bot.monitor.monitoring_active
+            "current_stats": stats,
+            "message": "Real-time stats only (history not implemented)"
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 # ==================== UTILITY ENDPOINTS ====================
 
@@ -321,13 +322,13 @@ def api_stats():
         bot = get_chatbot()
         
         return jsonify({
-            "monitoring_active": bot.monitor.monitoring_active,
-            "alerts_in_history": len(bot.monitor.alert_history),
-            "stats_in_history": len(bot.monitor.network_stats_history),
-            "intent_model_loaded": bot.intent_classifier.model is not None
+            "alerts_count": len(bot.ops.alerts),
+            "logs_count": len(bot.ops.logs.logs),
+            "system_status": "operational"
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 # ==================== ERROR HANDLERS ====================
 

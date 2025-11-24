@@ -1,14 +1,13 @@
-
 ----All ChatOps Commands---------
 
 NETWORK STATUS
 • network status - Overview of network stats
-• show interfaces - List network adapters
+• show interfaces - List network adapters  
 • show connections - Active connections
 • listening ports - Open/listening ports
 • process network usage - Network by process
 
- CONNECTIVITY TESTS
+CONNECTIVITY TESTS
 • ping <host> - Ping a host (ping 8.8.8.8)
 • traceroute <host> - Trace route to host
 • check port <host>:<port> - Test if port is open
@@ -22,33 +21,38 @@ DNS OPERATIONS
 NETWORK DISCOVERY
 • scan subnet <cidr> - Find hosts (192.168.1.0/24)
 • arp table - Show ARP entries
-• routing table - Show routes
+• mac address - Show MAC addresses
+• routing table - Show system routes
 • default gateway - Show gateway
 
- WEB/HTTP CHECKS
+WEB/HTTP CHECKS
 • check website <url> - Test if site is up
 • check ssl <domain> - Verify SSL certificate
 • http headers <url> - Get response headers
 
- SPEED & BANDWIDTH
+SPEED & BANDWIDTH
 • speed test - Run internet speed test
 • bandwidth - Current bandwidth usage
-• latency
+• latency - Measure network latency
 
- SYSTEM HEALTH
+SYSTEM HEALTH
 • system health - CPU, memory, disk, network
 • show alerts - View system alerts
 • diagnose network - Full network diagnosis
 
- LOGS
+SMART LOG ANALYSIS
 • show logs - Recent activity logs
 • logs last 2 hours - Logs from time period
+• summarize logs - AI-powered log summary
+• analyze logs - ML-based log analysis
 
- EXAMPLES
+EXAMPLES
 • ping google.com
 • traceroute 8.8.8.8
-• check port 192.168.1.1:22
-• scan subnet 192.168.1.0/24
+• check port 172.16.80.1:22
+• scan subnet 172.16.80.0/20
 • check website github.com
 • check ssl amazon.com
 • dns lookup microsoft.com
+• diagnose network
+• summarize logs last 24 hours

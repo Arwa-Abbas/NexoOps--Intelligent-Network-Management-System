@@ -1,4 +1,3 @@
-
 import psutil
 import socket
 import subprocess
@@ -645,34 +644,69 @@ class NetworkOperations:
     # NETWORK DISCOVERY
     # ═══════════════════════════════════════════════════════════════
     
-    def scan_subnet(self, cidr, timeout=0.5):
-        """Scan subnet for active hosts"""
+    def scan_subnet(self, cidr, timeout=2.0, max_threads=50, ports=None):
+        """Working threaded subnet scanner"""
+        if ports is None:
+            ports = [80, 443, 22, 23, 445, 3389, 8080]
+        
         try:
             network = ipaddress.ip_network(cidr, strict=False)
-            if network.num_addresses > 256:
-                return {"error": "Subnet too large (max /24)"}
+            hosts = list(network.hosts())
             
-            self.logs.add(f"Scanning subnet {cidr}")
-            active = []
+            if len(hosts) > 256:
+                return {"error": "Subnet too large. Try a /24 or smaller."}
             
-            for ip in network.hosts():
-                ip_str = str(ip)
-                # Try quick TCP connect on common ports
-                for port in [80, 443, 22, 445]:
+            active_hosts = []
+            lock = threading.Lock()
+            scanned_count = [0]
+            
+            def check_host(ip_str):
+                for port in ports:
                     try:
                         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                         sock.settimeout(timeout)
-                        if sock.connect_ex((ip_str, port)) == 0:
-                            active.append({"ip": ip_str, "port": port})
-                            sock.close()
-                            break
+                        result = sock.connect_ex((ip_str, port))
                         sock.close()
-                    except: pass
+                        
+                        if result == 0:
+                            with lock:
+                                active_hosts.append({"ip": ip_str, "port": port})
+                            break
+                    except:
+                        pass
+                
+                with lock:
+                    scanned_count[0] += 1
+                    if scanned_count[0] % 10 == 0:
+                        print(f"Scanned {scanned_count[0]}/{len(hosts)} hosts...")
             
-            self.logs.add(f"Subnet scan complete: {len(active)} hosts")
-            return {"subnet": cidr, "hosts_found": len(active), "hosts": active}
+            threads = []
+            for ip in hosts:
+                ip_str = str(ip)
+                
+                if ip_str.endswith('.0') or ip_str.endswith('.255'):
+                    continue
+                    
+                while threading.active_count() > max_threads:
+                    time.sleep(0.1)
+                
+                t = threading.Thread(target=check_host, args=(ip_str,))
+                t.daemon = True
+                t.start()
+                threads.append(t)
+            
+            for t in threads:
+                t.join(timeout=10)
+            
+            print(f"Scan complete. Found {len(active_hosts)} active hosts.")
+            return {
+                "subnet": cidr,
+                "hosts_found": len(active_hosts),
+                "hosts": active_hosts
+            }
+            
         except Exception as e:
-            return {"error": str(e)}
+            return {"error": f"Scan failed: {str(e)}"}
     
     def arp_table(self):
         """Get ARP table"""
