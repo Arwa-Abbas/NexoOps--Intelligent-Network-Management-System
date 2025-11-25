@@ -5,9 +5,9 @@
 
 ---
 
-## 📌 Overview
+## 📌 Overview 
 
-NexoOps is an intelligent network management platform that analyzes raw network logs, classifies alerts, summarizes events, and provides a ChatOps assistant for real-time diagnosis. It combines machine learning, natural language processing, and diagnostic tools to simplify network monitoring.
+- NexoOps is an intelligent network management platform that analyzes raw network logs, classifies alerts, summarizes events, and provides a ChatOps assistant for real-time diagnosis. It combines machine learning, natural language processing, and diagnostic tools to simplify network monitoring.
 ---
 
 ## 🚀 Key Features
@@ -75,5 +75,28 @@ NexoOps/
 
 ```
 
+## ⚙️ Setup & Installation
+
+### **1️⃣ Backend Setup (Python + Flask API)**
+
+#### **Step 1: Go to backend folder**
+```bash
+cd backend
+```
+#### **Step 2: Create virtual environment**
+```bash
+python -m venv venv
+```
+
+#### **Step 3: Activate virtual environment**
+Windows
+```bash
+venv\Scripts\activate
+```
+Mac/Linux
+```bash
+source venv/bin/activate
+
+```
 
 
