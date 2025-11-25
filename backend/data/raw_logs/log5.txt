@@ -1,0 +1,35 @@
+2025-11-24 09:05:12 [WARN] CPU_USAGE_MODERATE :
+Switch-05 CPU usage at 42%. Slight increase compared to baseline.
+
+2025-11-24 09:07:44 [WARN] MEMORY_UTILIZATION_NOTICE :
+Router-EDGE02 memory usage at 58%. Stable but elevated.
+
+2025-11-24 09:09:20 [WARN] TRAFFIC_SPIKE_MINOR :
+Inbound traffic on VLAN-20 increased by 18%. Within manageable limits.
+
+2025-11-24 09:12:03 [WARN] LOGIN_ACTIVITY_SPIKE :
+Login frequency for user "it_support" slightly higher than usual.
+
+2025-11-24 09:14:26 [WARN] WIFI_SIGNAL_VARIATION :
+Device "Galaxy-A15" showing mild fluctuation in signal strength.
+
+2025-11-24 09:16:55 [WARN] LATENCY_SLIGHT_INCREASE :
+Ping latency to Router-EDGE02 increased to 25ms. No impact expected.
+
+2025-11-24 09:19:10 [WARN] BACKUP_SYNC_DELAY :
+Backup sync on server-S1 started 2 minutes later than scheduled.
+
+2025-11-24 09:22:48 [WARN] DNS_QUERY_DELAYED :
+DNS resolution for "cloud-storage.com" took 350ms, slightly above normal.
+
+2025-11-24 09:25:36 [WARN] INTERFACE_FLAP_BRIEF :
+Interface eth1 on Switch-02 recorded a brief down-up event. Currently stable.
+
+2025-11-24 09:28:27 [WARN] FIREWALL_RULE_USAGE :
+Allow-rule #14 matched more frequently than usual. Likely normal traffic.
+
+2025-11-24 09:30:02 [WARN] VPN_SESSION_DURATION_NOTICE :
+User "admin_backup" VPN session longer than typical usage patterns.
+
+2025-11-24 09:32:49 [WARN] TIME_SYNC_DRIFT :
+NTP sync reported time drift of 120ms before correction. No issues now.
