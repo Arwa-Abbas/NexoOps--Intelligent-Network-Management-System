@@ -99,4 +99,30 @@ source venv/bin/activate
 
 ```
 
+#### **Step 4: Install required packages**
+```bash
+pip install -r requirements.txt
+```
+
+#### **Step 5: Run the backend API**
+```bash
+python api.py
+```
+
+### **2️⃣ Frontend Setup (React App)**
+
+#### **Step 1: Navigate to frontend React app**
+```bash
+cd frontend/react_app
+```
+
+#### **Step 2: Install dependencies**
+```bash
+npm install
+```
+
+#### **Step 3: Start the React app**
+```bash
+npm start
+```
 
